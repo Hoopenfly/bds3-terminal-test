@@ -1201,6 +1201,9 @@ class App:
                 self._log(msg, level)
         if self.running and self.pos_session is not None \
                 and sent.type_id.upper().endswith("RMC"):
+            #每收到一帧 RMC 就刷新存活时刻, 否则断流告警会误报
+            self.pos_last_seen = now
+            self.pos_warned_at = 0.0
             for level, msg in self.pos_session.on_rmc(sent, now):
                 self._log(msg, level)
         self._refresh_stats()
